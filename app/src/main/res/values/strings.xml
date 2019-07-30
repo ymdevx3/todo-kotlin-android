@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">TodoKt</string>
+    <string name="action_settings">Settings</string>
+    <string name="enter_content">What needs to be done?</string>
+    <string name="action_all">All</string>
+    <string name="action_active">Active</string>
+    <string name="action_completed">Completed</string>
+    <string name="task_not_created">Task not created because description is empty</string>
+</resources>
