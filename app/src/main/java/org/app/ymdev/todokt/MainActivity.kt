@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
 
     internal val LOG_TAG = "MainActivity"
 
-    private lateinit var mTaskAdapter: TaskAdapter
+    private lateinit var taskAdapter: TaskAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
 
         list.setOnItemClickListener { _, view, position, _ ->
             // Update Task
-            val task = this.mTaskAdapter.getItem(position) as Task
+            val task = this.taskAdapter.getItem(position) as Task
             task.completed = !task.completed
             this.updateTask(task)
 
@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         list.setOnItemLongClickListener { _, _, position, _ ->
-            val task = this.mTaskAdapter.getItem(position) as Task
+            val task = this.taskAdapter.getItem(position) as Task
 
             val editText = EditText(this)
             editText.setText(task.content)
@@ -117,11 +117,11 @@ class MainActivity : AppCompatActivity() {
                 return true
             }
             R.id.action_active -> {
-                this.reloadTasks(EMenuType.active)
+                this.reloadTasks(EMenuType.ACTIVE)
                 return true
             }
             R.id.action_completed -> {
-                this.reloadTasks(EMenuType.completed)
+                this.reloadTasks(EMenuType.COMPLETED)
                 return true
             }
             else -> super.onOptionsItemSelected(item)
@@ -135,12 +135,12 @@ class MainActivity : AppCompatActivity() {
     fun onClickTaskDelete(v: View) {
         // DBから削除
         val position = v.tag as Int
-        val task = this.mTaskAdapter.getItem(position) as Task
+        val task = this.taskAdapter.getItem(position) as Task
         this.deleteTask(task.id)
 
         // ListViewから削除
-        this.mTaskAdapter.remove(task)
-        this.mTaskAdapter.notifyDataSetChanged()
+        this.taskAdapter.remove(task)
+        this.taskAdapter.notifyDataSetChanged()
 
         Snackbar.make(list, "Deleted task : " + task.content, Snackbar.LENGTH_LONG)
             .setAction("Action", null).show()
@@ -150,24 +150,25 @@ class MainActivity : AppCompatActivity() {
      * 再読み込み
      * @param menu メニュー種別
      */
-    private fun reloadTasks(menu: EMenuType = EMenuType.all) {
+    private fun reloadTasks(menu: EMenuType = EMenuType.ALL) {
         try {
             val dbAdapter = TaskDBAdapter(this)
             var tasks = dbAdapter.getAllTasks()
 
             when (menu) {
-                EMenuType.active -> {
+                EMenuType.ACTIVE -> {
                     tasks = tasks.filter { x -> !x.completed}
                 }
-                EMenuType.completed -> {
+                EMenuType.COMPLETED -> {
                     tasks = tasks.filter { x -> x.completed}
                 }
+                else -> {}
             }
             // ID降順
             tasks = tasks.sortedByDescending { x -> x.id }
 
-            this.mTaskAdapter = TaskAdapter(this, tasks.toMutableList())
-            list.adapter = this.mTaskAdapter
+            this.taskAdapter = TaskAdapter(this, tasks.toMutableList())
+            list.adapter = this.taskAdapter
         } catch (ex: Exception) {
             throw RuntimeException(ex)
         }
@@ -196,7 +197,7 @@ class MainActivity : AppCompatActivity() {
             dbAdapter.updateTask(task)
 
             // ListView更新
-            this.mTaskAdapter.notifyDataSetChanged()
+            this.taskAdapter.notifyDataSetChanged()
         } catch (ex: Exception) {
             throw RuntimeException(ex)
         }

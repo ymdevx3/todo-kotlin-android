@@ -3,17 +3,17 @@ package org.app.ymdev.todokt.common
 object Constant {
 
     object DBProvider {
-        const val DATABASE_NAME = "todo.db"
-        const val DATABASE_VERSION = 1
+        const val databaseName = "todo.db"
+        const val databaseVersion = 1
 
-        const val TABLE_NAME = "task"
+        const val tableName = "task"
 
-        const val COL_ID = "id"
-        const val COL_CONTENT = "content"
-        const val COL_COMPLETED = "completed"
+        const val colId = "id"
+        const val colContent = "content"
+        const val colCompleted = "completed"
     }
 }
 
 enum class EMenuType {
-    all, active, completed
+    ALL, ACTIVE, COMPLETED
 }

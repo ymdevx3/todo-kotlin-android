@@ -4,10 +4,10 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
-import org.app.ymdev.todokt.common.Constant.DBProvider.COL_COMPLETED
-import org.app.ymdev.todokt.common.Constant.DBProvider.COL_CONTENT
-import org.app.ymdev.todokt.common.Constant.DBProvider.COL_ID
-import org.app.ymdev.todokt.common.Constant.DBProvider.TABLE_NAME
+import org.app.ymdev.todokt.common.Constant.DBProvider.colCompleted
+import org.app.ymdev.todokt.common.Constant.DBProvider.colContent
+import org.app.ymdev.todokt.common.Constant.DBProvider.colId
+import org.app.ymdev.todokt.common.Constant.DBProvider.tableName
 import org.app.ymdev.todokt.data.Task
 import org.app.ymdev.todokt.utility.toBoolean
 
@@ -22,13 +22,13 @@ class TaskDBAdapter(context: Context) {
 
     fun getAllTasks(): List<Task> {
         var tasks: MutableList<Task> = ArrayList()
-        val cursor: Cursor = db.query(TABLE_NAME, null, null, null, null, null, null)
-        if (cursor != null && cursor.moveToFirst()) {
+        val cursor: Cursor = db.query(tableName, null, null, null, null, null, null)
+        if (cursor.moveToFirst()) {
             do {
                 val task = Task(
-                    cursor.getInt(cursor.getColumnIndex(COL_ID)),
-                    cursor.getString(cursor.getColumnIndex(COL_CONTENT)),
-                    cursor.getInt(cursor.getColumnIndex(COL_COMPLETED)).toBoolean()
+                    cursor.getInt(cursor.getColumnIndex(colId)),
+                    cursor.getString(cursor.getColumnIndex(colContent)),
+                    cursor.getInt(cursor.getColumnIndex(colCompleted)).toBoolean()
                 )
                 tasks.add(task)
             } while(cursor.moveToNext())
@@ -38,20 +38,20 @@ class TaskDBAdapter(context: Context) {
 
     fun createTask(content: String) {
         val values = ContentValues()
-        values.put(COL_CONTENT, content)
+        values.put(colContent, content)
 
-        db.insertOrThrow(TABLE_NAME, null, values)
+        db.insertOrThrow(tableName, null, values)
     }
 
     fun updateTask(task: Task) {
         val values = ContentValues()
-        values.put(COL_CONTENT, task.content)
-        values.put(COL_COMPLETED, task.completed)
+        values.put(colContent, task.content)
+        values.put(colCompleted, task.completed)
 
-        db.update(TABLE_NAME, values, "$COL_ID = ?", arrayOf(task.id.toString()))
+        db.update(tableName, values, "$colId = ?", arrayOf(task.id.toString()))
     }
 
     fun deleteTask(id: Int) {
-        db.delete(TABLE_NAME, "$COL_ID = ?", arrayOf(id.toString()))
+        db.delete(tableName, "$colId = ?", arrayOf(id.toString()))
     }
 }
